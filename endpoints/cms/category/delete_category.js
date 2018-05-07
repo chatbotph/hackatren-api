@@ -34,7 +34,7 @@ module.exports = (req, res, next) => {
         const itemCheck = await checkItem();
         if (isNotExists(itemCheck) === true) {
           await removeCategory();
-          sendData(res);
+          sendData(res, "Category deleted");
         } else {
           sendError(
             res,
