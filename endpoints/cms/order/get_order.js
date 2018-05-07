@@ -11,14 +11,22 @@ const Order = require("../../../models/order"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { fields } = req.query;
+  const { fields, order_no } = req.query;
 
-  const getOrder = () =>
-    Order.findOne({ _id: ObjectId(_id), status: 1 }, fields)
+  const getOrder = () => {
+    let query = order_no
+      ? {
+          order_no,
+          status: 1
+        }
+      : { status: 1, _id: ObjectId(_id) };
+
+    return Order.findOne(query, fields)
       .populate({ path: "customer items", select: "name price" })
       .catch(err => {
         throw err;
       });
+  };
 
   async function main() {
     try {

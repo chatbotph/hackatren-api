@@ -5,7 +5,8 @@ const Order = require("../../../models/order"),
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
-  { isNotExists } = require("../../../utils/op-helpers");
+  { isNotExists } = require("../../../utils/op-helpers"),
+  randomstring = require("randomstring");
 
 module.exports = (req, res, next) => {
   const { name, messenger_id } = req.body;
@@ -18,6 +19,10 @@ module.exports = (req, res, next) => {
   const createOrder = customer => {
     const { _id } = customer;
     req.body.customer = _id;
+    req.body.order_no = randomstring.generate({
+      length: 6,
+      capitalization: "uppercase"
+    });
     const newOrder = new Order(req.body);
     return newOrder.save().catch(err => {
       throw err;
