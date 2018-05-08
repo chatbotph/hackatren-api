@@ -6,35 +6,45 @@ const Customer = require("../../../models/customer"),
   { sendError, sendData } = require("../../../utils/uni-response");
 
 module.exports = (req, res, next) => {
+  console.log(req.query);
   const {
-    pageSize = 50,
+    pageSize = 40,
     page = 1,
     qName = "",
     qAddress = "",
-    qContact = ""
+    qContact = "",
+    fields = ""
   } = req.query;
 
   const getCustomers = () => {
     const textQuery = [];
+    let query = {
+      status: 1
+    };
     if (qName !== "") {
       textQuery.push({
-        name: new RegExp(`${qName}`, "ig")
+        name: new RegExp(`${qName}`, "i")
       });
     }
     if (qAddress !== "") {
       textQuery.push({
-        address: new RegExp(`${qAddress}`, "ig")
+        address: new RegExp(`${qAddress}`, "i")
       });
     }
     if (qContact !== "") {
       textQuery.push({
-        contact_no: new RegExp(`${qContact}`, "ig")
+        contact_no: new RegExp(`${qContact}`, "i")
       });
     }
-    let query = {
-      $or: textQuery
-    };
-    return Customer.find({ status: 1 }, fields)
+
+    if (textQuery.length > 0) {
+      query = {
+        $and: textQuery,
+        status: 1
+      };
+    }
+    console.log(query);
+    return Customer.find(query, fields)
       .sort({ timestamp: -1 })
       .skip((Number(page) - 1) * Number(pageSize))
       .limit(Number(pageSize))
@@ -46,6 +56,7 @@ module.exports = (req, res, next) => {
   async function main() {
     try {
       const customers = await getCustomers();
+      console.log(customers);
       sendData(res, "", customers, 200);
     } catch (error) {
       console.error(error);

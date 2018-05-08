@@ -12,7 +12,8 @@ const order = new Schema({
   total_price: requiredField(STR),
   status: requiredField(NUM, true, 1), //0-archived 1-active 2-delivered,
   timestamp: requiredField(NUM, true, Date.now()),
-  order_no: requiredField(STR)
+  order_no: requiredField(STR),
+  remarks: requiredField(STR, false)
 });
 
 module.exports = mongoose.model("Delivery-Order", order);
