@@ -8,9 +8,11 @@ const Customer = require("../../../models/customer"),
 module.exports = (req, res, next) => {
   const { fields } = req.query;
   const getCustomers = () =>
-    Customer.find({ status: 1 }, fields).catch(err => {
-      throw err;
-    });
+    Customer.find({ status: 1 }, fields)
+      .sort({ timestamp: -1 })
+      .catch(err => {
+        throw err;
+      });
 
   async function main() {
     try {

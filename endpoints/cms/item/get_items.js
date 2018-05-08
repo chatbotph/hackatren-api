@@ -3,16 +3,27 @@ const Item = require("../../../models/item"),
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
   } = require("../../../utils/errors"),
-  { sendError, sendData } = require("../../../utils/uni-response");
+  { sendError, sendData } = require("../../../utils/uni-response"),
+  {
+    Types: { ObjectId }
+  } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { fields } = req.query;
-  const getItems = () =>
-    Item.find({ status: 1 }, fields)
+  const { fields, category = "" } = req.query;
+
+  const getItems = () => {
+    let query = {
+      status: 1
+    };
+    if (category !== "") {
+      query["categories"] = { $elemMatch: { $eq: ObjectId(category) } };
+    }
+    return Item.find(query, fields)
       .populate({ path: "categories", select: "name" })
       .catch(err => {
         throw err;
       });
+  };
 
   async function main() {
     try {

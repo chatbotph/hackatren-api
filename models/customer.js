@@ -4,7 +4,8 @@ const mongoose = require("mongoose"),
     requiredField,
     refGen,
     fieldTypes: { STR, NUM }
-  } = require("../utils/database");
+  } = require("../utils/database"),
+  Order = require("./order");
 
 const customer = new Schema({
   messenger_id: requiredField(STR),
@@ -13,6 +14,14 @@ const customer = new Schema({
   address: requiredField(STR),
   status: requiredField(NUM, true, 1), //0-archived 1-active,
   timestamp: requiredField(NUM, true, Date.now())
+});
+
+customer.post("remove", doc => {
+  const { _id } = doc;
+  console.log("customer", _id);
+  Order.remove({ customer: mongoose.Types.ObjectId(_id) }).then(d => {
+    console.log(d);
+  });
 });
 
 module.exports = mongoose.model("Delivery-Customer", customer);

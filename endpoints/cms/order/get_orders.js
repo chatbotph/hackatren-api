@@ -18,6 +18,7 @@ module.exports = (req, res, next) => {
     }
     console.log(query, fields);
     return Order.find(query, fields)
+      .sort({ timestamp: -1 })
       .populate({ path: "customer items", select: "name price" })
       .catch(err => {
         throw err;
