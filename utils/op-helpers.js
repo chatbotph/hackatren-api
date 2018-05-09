@@ -8,7 +8,7 @@ module.exports.populateQuery = (populate = "") => {
       const [path, select] = params.split(";");
       return {
         path,
-        select: select.replace(",", " ")
+        select: select.replace(new RegExp(",", "g"), " ")
       };
     });
   } else {

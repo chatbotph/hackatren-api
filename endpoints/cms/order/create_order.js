@@ -1,8 +1,8 @@
 const Order = require("../../../models/order"),
   Customer = require("../../../models/customer"),
   {
-    errs: { CONFILCT_ERROR, SERVER_ERROR },
-    errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
+    errs: { NOT_FOUND, SERVER_ERROR },
+    errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
   { isNotExists } = require("../../../utils/op-helpers"),
@@ -32,8 +32,12 @@ module.exports = (req, res, next) => {
   async function main() {
     try {
       const customer = await getCustomer();
-      await createOrder(customer);
-      sendData(res, "Resource created", {}, 201);
+      if (customer) {
+        await createOrder(customer);
+        sendData(res, "Resource created", {}, 201);
+      } else {
+        sendError(res, NOT_FOUND, NOT_FOUND_MSG);
+      }
     } catch (error) {
       console.error(error);
       sendError(res, SERVER_ERROR, SERVER_ERROR_MSG);
