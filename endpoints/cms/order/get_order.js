@@ -4,14 +4,14 @@ const Order = require("../../../models/order"),
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
-  { isNotExists } = require("../../../utils/op-helpers"),
+  { isNotExists, populateQuery } = require("../../../utils/op-helpers"),
   {
     Types: { ObjectId }
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { fields, order_no } = req.query;
+  const { fields, order_no, populate = "" } = req.query;
 
   const getOrder = () => {
     let query = order_no
@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
       : { status: 1, _id: ObjectId(_id) };
 
     return Order.findOne(query, fields)
-      .populate({ path: "customer items", select: "name price" })
+      .populate(populateQuery(populate))
       .catch(err => {
         throw err;
       });

@@ -4,22 +4,23 @@ const Order = require("../../../models/order"),
     errMsgs: { SERVER_ERROR_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
+  { populateQuery } = require("../../../utils/op-helpers"),
   {
     Types: { ObjectId }
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { fields, customer = "", messenger_id = "" } = req.query;
+  const { fields, customer = "", messenger_id = "", populate = "" } = req.query;
 
   const getOrders = () => {
     let query = { status: 1 };
     if (customer !== "") {
       query["customer"] = ObjectId(customer);
     }
-    console.log(query, fields);
+
     return Order.find(query, fields)
       .sort({ timestamp: -1 })
-      .populate({ path: "customer items", select: "name price" })
+      .populate(populateQuery(populate))
       .catch(err => {
         throw err;
       });

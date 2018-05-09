@@ -3,13 +3,14 @@ const Item = require("../../../models/item"),
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
   } = require("../../../utils/errors"),
+  { populateQuery } = require("../../../utils/op-helpers"),
   { sendError, sendData } = require("../../../utils/uni-response"),
   {
     Types: { ObjectId }
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { fields, category = "" } = req.query;
+  const { fields, category = "", populate = "" } = req.query;
 
   const getItems = () => {
     let query = {
@@ -19,7 +20,7 @@ module.exports = (req, res, next) => {
       query["categories"] = { $elemMatch: { $eq: ObjectId(category) } };
     }
     return Item.find(query, fields)
-      .populate({ path: "categories", select: "name" })
+      .populate(populateQuery(populate))
       .catch(err => {
         throw err;
       });
