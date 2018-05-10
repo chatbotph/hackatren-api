@@ -16,8 +16,10 @@ module.exports = (req, res, next) => {
   const getCustomer = () => {
     let query = { _id: ObjectId(_id), status: 1 };
     if (messenger_id !== "") {
-      let query = { messenger_id, status: 1 };
+      query = { messenger_id: Number(messenger_id), status: 1 };
     }
+
+    console.log(query);
     return Customer.findOne(query, fields).catch(err => {
       throw err;
     });
