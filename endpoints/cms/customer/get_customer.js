@@ -18,7 +18,7 @@ module.exports = (req, res, next) => {
     if (messenger_id !== "") {
       let query = { messenger_id, status: 1 };
     }
-    return Customer.findOne({ query, status: 1 }, fields).catch(err => {
+    return Customer.findOne(query, fields).catch(err => {
       throw err;
     });
   };

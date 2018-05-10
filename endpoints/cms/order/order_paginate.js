@@ -15,12 +15,13 @@ module.exports = (req, res, next) => {
     fields = "",
     start = "",
     end = "",
-    populate = ""
+    populate = "",
+    status = ""
   } = req.query;
 
   const getOrders = () => {
     let query = {
-      status: { $gt: 0 }
+      status: Number(status) === 0 ? { $gt: 0 } : Number(status)
     };
 
     if (q !== "") {
