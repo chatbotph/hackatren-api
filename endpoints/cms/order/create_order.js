@@ -33,8 +33,8 @@ module.exports = (req, res, next) => {
     try {
       const customer = await getCustomer();
       if (customer) {
-        await createOrder(customer);
-        sendData(res, "Resource created", {}, 201);
+        const { order_no } = await createOrder(customer);
+        sendData(res, "Resource created", { order_no }, 201);
       } else {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
       }
