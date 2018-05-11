@@ -9,19 +9,34 @@ const Customer = require("../../../models/customer"),
 module.exports = (req, res, next) => {
   const { _id } = req.params;
 
-  const updateCustomer = () =>
+  const updateCustomerById = () =>
     Customer.findByIdAndUpdate(_id, req.body).catch(err => {
+      throw err;
+    });
+
+  const updateCustomerByMessengerId = () =>
+    Customer.findOneAndUpdate({ messenger_id: _id }, req.body).catch(err => {
       throw err;
     });
 
   async function main() {
     try {
-      const customer = await Customer.findById(_id);
-      if (isNotExists(customer) == true) {
-        sendError(res, NOT_FOUND, NOT_FOUND_MSG);
-      } else {
-        await updateCustomer();
-        sendData(res, "Customer Updated");
+      try {
+        const byId = await Customer.findById(_id);
+        if (isNotExists(byId) == true) {
+          sendError(res, NOT_FOUND, NOT_FOUND_MSG);
+        } else {
+          await updateCustomerById();
+          sendData(res, "Customer Updated");
+        }
+      } catch (error) {
+        const byMessengerId = await Customer.findOne({ messenger_id: _id });
+        if (isNotExists(byMessengerId) == true) {
+          sendError(res, NOT_FOUND, NOT_FOUND_MSG);
+        } else {
+          await updateCustomerByMessengerId();
+          sendData(res, "Customer Updated");
+        }
       }
     } catch (error) {
       console.error(error);
