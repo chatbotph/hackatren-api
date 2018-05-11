@@ -13,10 +13,10 @@ module.exports = (req, res, next) => {
   const { _id } = req.params;
   const { fields } = req.query;
 
-  const getCustomer = () => {
+  const getCustomerByMessengerId = () => {
     return Customer.findOne(
       {
-        $or: [{ _id }, { messenger_id: _id }]
+        messenger_id: _id
       },
       fields
     ).catch(err => {
@@ -24,13 +24,25 @@ module.exports = (req, res, next) => {
     });
   };
 
+  const getById = () =>
+    Customer.findById(_id, fields).catch(err => {
+      throw err;
+    });
+
   async function main() {
     try {
-      const customer = await getCustomer();
-      if (isNotExists(customer) === false) {
-        sendData(res, "", customer, 200);
+      let byMessengerId = await getCustomerByMessengerId();
+      if (byMessengerId) {
+        sendData(res, "", byMessengerId, 200);
       } else {
-        sendError(res, NOT_FOUND, NOT_FOUND_MSG);
+        const customer = await Customer.findById(_id).catch(err => {
+          throw err;
+        });
+        if (isNotExists(customer) === false) {
+          sendData(res, "", customer, 200);
+        } else {
+          sendError(res, NOT_FOUND, NOT_FOUND_MSG);
+        }
       }
     } catch (error) {
       console.error(error);
