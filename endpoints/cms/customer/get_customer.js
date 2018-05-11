@@ -11,16 +11,16 @@ const Customer = require("../../../models/customer"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { fields, messenger_id = "" } = req.query;
+  const { fields } = req.query;
 
   const getCustomer = () => {
-    let query = { _id: ObjectId(_id), status: 1 };
-    if (messenger_id !== "") {
-      query = { messenger_id: Number(messenger_id), status: 1 };
-    }
-
     console.log(query);
-    return Customer.findOne(query, fields).catch(err => {
+    return Customer.findOne(
+      {
+        $or: [{ _id }, { messenger_id: _id }]
+      },
+      fields
+    ).catch(err => {
       throw err;
     });
   };
