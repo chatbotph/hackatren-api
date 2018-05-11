@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
   const { fields } = req.query;
 
   const getCustomer = () => {
-    console.log(query);
     return Customer.findOne(
       {
         $or: [{ _id }, { messenger_id: _id }]
