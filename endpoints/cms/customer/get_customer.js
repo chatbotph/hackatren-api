@@ -31,15 +31,19 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      let byMessengerId = await getCustomerByMessengerId();
-      if (byMessengerId) {
-        sendData(res, "", byMessengerId, 200);
-      } else {
+      try {
         const customer = await Customer.findById(_id).catch(err => {
           throw err;
         });
         if (isNotExists(customer) === false) {
           sendData(res, "", customer, 200);
+        } else {
+          sendError(res, NOT_FOUND, NOT_FOUND_MSG);
+        }
+      } catch (err) {
+        let byMessengerId = await getCustomerByMessengerId();
+        if (isNotExists(byMessengerId) === false) {
+          sendData(res, "", byMessengerId, 200);
         } else {
           sendError(res, NOT_FOUND, NOT_FOUND_MSG);
         }
