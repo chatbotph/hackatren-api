@@ -20,6 +20,7 @@ module.exports = (req, res, next) => {
         select: "customer order_no",
         populate: { path: "customer", select: "name" }
       })
+      .sort({ last_activity: -1 })
       .catch(err => {
         throw err;
       });

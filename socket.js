@@ -9,6 +9,7 @@ module.exports = api => {
   const MESSAGE = "MESSAGE";
   const THREAD = "THREAD";
   const LOGOUT = "LOGOUT";
+  const ORDER = "ORDER";
 
   const socket = io(api, { transports: ["websocket"] });
   const USER_SOCKETS = {};
@@ -25,6 +26,15 @@ module.exports = api => {
       delete USER_SOCKETS[user_id];
     });
   });
+
+  const emitNewOrder = (req, res, next) => {
+    const { order, agent, thread } = req.payload;
+    const userSocket = USER_SOCKETS[agent];
+    if (userSocket) {
+      userSocket.emit(ORDER, { order, thread });
+      res.send(201, { data: { order_no: order.order_no } });
+    }
+  };
 
   const emitThread = (req, res, next) => {
     const { thread, agent } = req.payload;
@@ -59,6 +69,7 @@ module.exports = api => {
 
   return {
     emitThread,
-    emitMessage
+    emitMessage,
+    emitNewOrder
   };
 };

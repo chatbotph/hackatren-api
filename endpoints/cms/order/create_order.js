@@ -11,9 +11,10 @@ const Order = require("../../../models/order"),
   randomstring = require("randomstring");
 
 module.exports = (req, res, next) => {
-  const {
-    data: { _id: agentId }
-  } = decodeToken(req.headers["authorization-token"]);
+  // const {
+  //   data: { _id: agentId }
+  // } = decodeToken(req.headers["authorization-token"]);
+  const agentId = "5af3db1271f54735bccdacbb";
   const { name, messenger_id } = req.body;
 
   const getCustomer = () =>
@@ -44,9 +45,24 @@ module.exports = (req, res, next) => {
     try {
       const customer = await getCustomer();
       if (customer) {
-        const { order_no, _id } = await createOrder(customer);
-        await createThread(_id);
-        sendData(res, "Resource created", { order_no }, 201);
+        let order = await createOrder(customer);
+        order = await Order.findById(order._id).populate({
+          path: "customer",
+          select: "name contact_no address"
+        });
+        let thread = await createThread(order._id);
+        thread = await Thread.findById(thread._id).populate({
+          path: "order",
+          select: "customer order_no",
+          populate: { path: "customer", select: "name" }
+        });
+        console.log(thread);
+        req.payload = {
+          agent: agentId,
+          thread,
+          order
+        };
+        next();
       } else {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
       }
