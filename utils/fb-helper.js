@@ -1,11 +1,8 @@
-const fb = require('fb-messenger'); 
-const format = require('string-format');
-
+const fb = require("fb-messenger");
 
 /**END */
 
-module.exports.sendMessage = 
-(id, message) => {
-    var messenger = new fb(process.env.FB_PAGE_TOKEN);
-    messenger.sendTextMessage(id, message)
-}
+module.exports.sendMessage = (id, message) => {
+  var messenger = new fb(process.env.FB_ACCESS_TOKEN);
+  messenger.sendTextMessage(id, message);
+};

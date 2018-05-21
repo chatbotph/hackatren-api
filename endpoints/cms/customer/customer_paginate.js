@@ -56,7 +56,6 @@ module.exports = (req, res, next) => {
   async function main() {
     try {
       const customers = await getCustomers();
-      console.log(customers);
       sendData(res, "", customers, 200);
     } catch (error) {
       console.error(error);

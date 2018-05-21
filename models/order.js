@@ -8,7 +8,7 @@ const mongoose = require("mongoose"),
 
 const order = new Schema({
   customer: refGen("Delivery-Customer"),
-  items: [refGen("Delivery-Item")],
+  items: [{ quantity: requiredField(NUM), item: refGen("Delivery-Item") }],
   total_price: requiredField(STR),
   status: requiredField(NUM, true, 1), //0-archived 1-pending 2-delivered,
   timestamp: requiredField(NUM, true, Date.now()),

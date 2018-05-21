@@ -25,7 +25,7 @@ function unknownMethodHandler(req, res) {
       "Accept-Version",
       "Content-Type",
       "Api-Version",
-      "x-access-token"
+      "authorization-token"
     ];
 
     if (res.methods.indexOf("OPTIONS") === -1) res.methods.push("OPTIONS");

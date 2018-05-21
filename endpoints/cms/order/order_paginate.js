@@ -59,7 +59,6 @@ module.exports = (req, res, next) => {
       };
     }
 
-    console.log(populateQuery(populate));
 
     return Order.find(query, fields)
       .populate(populateQuery(populate))

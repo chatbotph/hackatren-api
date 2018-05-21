@@ -17,9 +17,12 @@ module.exports = (req, res, next) => {
     let query = order_no
       ? {
           order_no,
-          status: 1
+          $and: [{ status: { $gte: 1 } }, { status: { $lt: 3 } }]
         }
-      : { status: 1, _id: ObjectId(_id) };
+      : {
+          $and: [{ status: { $gte: 1 } }, { status: { $lt: 3 } }],
+          _id: ObjectId(_id)
+        };
 
     return Order.findOne(query, fields)
       .populate(populateQuery(populate))

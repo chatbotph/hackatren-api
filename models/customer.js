@@ -9,6 +9,7 @@ const mongoose = require("mongoose"),
 
 const customer = new Schema({
   messenger_id: requiredField(STR),
+  img_url: requiredField(STR),
   name: requiredField(STR),
   contact_no: requiredField(STR),
   address: requiredField(STR),
@@ -18,8 +19,8 @@ const customer = new Schema({
 
 customer.post("remove", doc => {
   const { _id } = doc;
-  console.log("customer", _id);
   Order.remove({ customer: mongoose.Types.ObjectId(_id) }).then(d => {
+    console.log("customer order removed", _id);
     console.log(d);
   });
 });

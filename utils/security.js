@@ -1,7 +1,8 @@
 const jwt = require("jsonwebtoken"),
   bcrypt = require("bcrypt"),
-  Client = require("../models/client"),
-  { errs: { FORBIDDEN, SERVER_ERROR } } = require("./errors"),
+  {
+    errs: { FORBIDDEN, SERVER_ERROR }
+  } = require("./errors"),
   { sendError } = require("./uni-response");
 
 //generate JWT access token
@@ -32,7 +33,7 @@ exports.comparePasswords = (passedPassword, storedPassword) => {
 
 //generate JWT access token
 exports.generateAppAccessToken = payload => {
-  let key = "dsds";
+  let key = process.env.JWT_SECRET;
   return jwt.sign(payload, key, { expiresIn: "365d" });
 };
 

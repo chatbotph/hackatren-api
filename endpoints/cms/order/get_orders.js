@@ -10,16 +10,28 @@ const Order = require("../../../models/order"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { fields, customer = "", messenger_id = "", populate = "" } = req.query;
+  const {
+    fields,
+    customer = "",
+    messenger_id = "",
+    populate = "",
+    order_no = ""
+  } = req.query;
 
   const getOrders = () => {
-    let query = { status: { $gt: 0 } };
+    let query = {
+      $and: [{ status: { $gte: 1 } }, { status: { $lt: 3 } }]
+    };
     if (customer !== "") {
       query["customer"] = ObjectId(customer);
     }
 
     if (messenger_id !== "") {
-      query["messenger_id"] = ObjectId(customer);
+      query["messenger_id"] = messenger_id;
+    }
+
+    if (order_no !== "") {
+      query["order_no"] = order_no;
     }
 
     return Order.find(query, fields)
