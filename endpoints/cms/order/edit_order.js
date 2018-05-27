@@ -5,6 +5,10 @@ const Order = require("../../../models/order"),
   } = require("../../../utils/errors"),
   { isNotExists } = require("../../../utils/op-helpers"),
   { sendError, sendData } = require("../../../utils/uni-response"),
+  { sendMessage } = require("../../../utils/fb-helper"),
+  {
+    messages: { FOR_DELIVERY, DELIVERED, REJECTED, PENDING }
+  } = require("../../../utils/notifs"),
   {
     Types: { ObjectId }
   } = require("mongoose");
@@ -27,11 +31,42 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      const order = await Order.findById(_id);
+      const order = await Order.findById(_id).populate(
+        "customer",
+        "messenger_id"
+      );
       if (isNotExists(order) == true) {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
       } else {
         await updateOrder();
+        if (req.body.status) {
+          const {
+            customer: { messenger_id },
+            order_no
+          } = order;
+          switch (Number(req.body.status)) {
+            case 1: {
+              sendMessage(messenger_id, PENDING(order_no));
+              break;
+            }
+            case 2: {
+              sendMessage(messenger_id, FOR_DELIVERY(order_no));
+              break;
+            }
+            case 3: {
+              sendMessage(messenger_id, DELIVERED(order_no));
+              break;
+            }
+            case 4: {
+              sendMessage(messenger_id, REJECTED(order_no));
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+        }
+
         sendData(res, "Order Updated");
       }
     } catch (error) {

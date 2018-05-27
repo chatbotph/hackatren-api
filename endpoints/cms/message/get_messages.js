@@ -11,8 +11,13 @@ const Message = require("../../../models/message"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { thread = "", fields = "" } = req.query;
-  const { message } = req.body;
+  const {
+    thread = "",
+    fields = "",
+    paginate = "",
+    page = 1,
+    pageSize = 10
+  } = req.query;
 
   let query;
 
@@ -20,10 +25,20 @@ module.exports = (req, res, next) => {
     query = { thread: ObjectId(thread) };
   }
 
-  const getMessages = () =>
-    Message.find(query, fields).catch(err => {
-      throw err;
-    });
+  const paginateMessages = () =>
+    Message.find(query)
+      .sort({ timestamp: -1 })
+      .skip((Number(page) - 1) * Number(pageSize))
+      .limit(Number(pageSize));
+
+  const getMessages = () => {
+    if (paginate === "") {
+      return Message.find(query, fields).catch(err => {
+        throw err;
+      });
+    }
+    return paginateMessages();
+  };
 
   async function main() {
     try {

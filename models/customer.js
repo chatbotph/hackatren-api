@@ -17,12 +17,18 @@ const customer = new Schema({
   timestamp: requiredField(NUM, true, Date.now())
 });
 
-customer.post("remove", doc => {
-  const { _id } = doc;
-  Order.remove({ customer: mongoose.Types.ObjectId(_id) }).then(d => {
-    console.log("customer order removed", _id);
-    console.log(d);
-  });
+customer.post("remove", async doc => {
+  try {
+    const { _id } = doc;
+    const orders = await Order.find({ customer: mongoose.Types.ObjectId(_id) });
+    orders.forEach(o => {
+      Order.findByIdAndRemove(o._id, (err, order) => {
+        order.remove();
+      });
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = mongoose.model("Delivery-Customer", customer);

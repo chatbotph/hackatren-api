@@ -13,7 +13,9 @@ module.exports = (req, res, next) => {
   const { _id } = req.params;
 
   const removeOrder = () =>
-    Order.findByIdAndRemove(_id).catch(err => {
+    Order.findByIdAndRemove(_id, (err, order) => {
+      order.remove();
+    }).catch(err => {
       throw err;
     });
 

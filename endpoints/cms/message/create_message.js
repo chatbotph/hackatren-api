@@ -22,16 +22,14 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
+      console.log("here");
       let { thread, message } = await createMessage();
       const { order } = await Thread.findById(thread).populate({
         path: "order",
         select: "customer",
         populate: { path: "customer", select: "messenger_id" }
       });
-
-      console.log(order);
       sendMessage(order.customer.messenger_id, message);
-      console.log("message to messenger sent");
 
       sendData(res);
     } catch (error) {
