@@ -32,8 +32,9 @@ module.exports = api => {
     const userSocket = USER_SOCKETS[agent];
     if (userSocket) {
       userSocket.emit(ORDER, { order, thread });
-      res.send(201, { data: { order_no: order.order_no } });
+      return res.send(201, { data: { order_no: order.order_no } });
     }
+    res.send(201, { data: { order_no: order.order_no } });
   };
 
   const emitThread = (req, res, next) => {
@@ -41,8 +42,9 @@ module.exports = api => {
     const userSocket = USER_SOCKETS[agent];
     if (userSocket) {
       userSocket.emit(THREAD, { thread });
-      res.send(201);
+      return res.send(201);
     }
+    return res.send(201);
   };
 
   const emitMessage = (req, res, next) => {
@@ -50,8 +52,9 @@ module.exports = api => {
     const userSocket = USER_SOCKETS[agent];
     if (userSocket) {
       userSocket.emit(MESSAGE, { message, order_no });
-      res.send(201);
+      return res.send(201);
     }
+    return res.send(201);
   };
 
   // const emitMessage = (req, res, next) => {
