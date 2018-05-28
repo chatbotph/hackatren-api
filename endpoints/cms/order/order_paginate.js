@@ -5,6 +5,9 @@ const Order = require("../../../models/order"),
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
   { populateQuery } = require("../../../utils/op-helpers"),
+  {
+    Types: { ObjectId }
+  } = require("mongoose"),
   moment = require("moment");
 
 module.exports = (req, res, next) => {
@@ -16,7 +19,8 @@ module.exports = (req, res, next) => {
     start = "",
     end = "",
     populate = "",
-    status = ""
+    status = "",
+    customer = ""
   } = req.query;
 
   const getOrders = () => {
@@ -26,6 +30,10 @@ module.exports = (req, res, next) => {
 
     if (q !== "") {
       query.order_no = new RegExp(`${q}`, "i");
+    }
+
+    if (customer !== "") {
+      query.customer = ObjectId(customer);
     }
 
     if (start !== "" && end !== "") {
@@ -58,7 +66,6 @@ module.exports = (req, res, next) => {
           .valueOf()
       };
     }
-
 
     return Order.find(query, fields)
       .populate(populateQuery(populate))

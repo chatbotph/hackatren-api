@@ -18,6 +18,8 @@ module.exports = (req, res, next) => {
     order_no = ""
   } = req.query;
 
+  console.log(req.body);
+
   const getOrders = () => {
     let query = {
       $and: [{ status: { $gte: 1 } }, { status: { $lt: 3 } }]
