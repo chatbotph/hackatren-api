@@ -15,15 +15,15 @@ const Order = require("../../../models/order"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { order_no } = req.params;
+  let validId = ObjectId.isValid(_id);
 
   const updateOrder = () => {
-    let query = order_no
-      ? {
-          order_no,
+    let query = validId
+      ? { status: 1, _id: ObjectId(_id) }
+      : {
+          order_no: _id,
           status: 1
-        }
-      : { status: 1, _id: ObjectId(_id) };
+        };
     return Order.findOneAndUpdate(query, req.body).catch(err => {
       throw err;
     });
@@ -31,10 +31,15 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      const order = await Order.findById(_id).populate(
-        "customer",
-        "messenger_id"
-      );
+      let order;
+      if (validId) {
+        order = await Order.findById(_id).populate("customer", "messenger_id");
+      } else {
+        order = await Order.findOne({ order_no: _id }).populate(
+          "customer",
+          "messenger_id"
+        );
+      }
       if (isNotExists(order) == true) {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
       } else {

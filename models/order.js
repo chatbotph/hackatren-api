@@ -3,7 +3,7 @@ const mongoose = require("mongoose"),
   {
     requiredField,
     refGen,
-    fieldTypes: { STR, NUM, OID }
+    fieldTypes: { STR, NUM, OID, BOOL }
   } = require("../utils/database"),
   Thread = require("./thread");
 
@@ -15,7 +15,8 @@ const order = new Schema({
   timestamp: requiredField(NUM, true, Date.now()),
   order_no: requiredField(STR),
   remarks: requiredField(STR, false),
-  rating: requiredField(NUM, true, 0)
+  rating: requiredField(NUM, true, 0),
+  hop: requiredField(BOOL, true, false)
 });
 
 order.post("remove", doc => {
