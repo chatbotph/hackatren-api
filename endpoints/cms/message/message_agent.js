@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      console.log(req.body);
+      console.log("body", req.body);
       let order = await Order.findOne({ order_no });
       if (isNotExists(order)) {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
