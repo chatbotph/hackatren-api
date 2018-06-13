@@ -12,7 +12,6 @@ const Order = require("../../../models/order"),
 module.exports = (req, res, next) => {
   const { _id } = req.params;
   const { fields, order_no, populate = "" } = req.query;
-  
 
   const getOrder = () => {
     let query = order_no
@@ -22,8 +21,10 @@ module.exports = (req, res, next) => {
         }
       : {
           $and: [{ status: { $gte: 1 } }, { status: { $lt: 3 } }],
-          _id: ObjectId(_id)
+          _id
         };
+
+    console.log(query);
 
     return Order.findOne(query, fields)
       .populate(populateQuery(populate))
@@ -35,6 +36,7 @@ module.exports = (req, res, next) => {
   async function main() {
     try {
       const order = await getOrder();
+      console.log(`order id ${_id}`, order);
       if (isNotExists(order) === false) {
         sendData(res, "", order, 200);
       } else {

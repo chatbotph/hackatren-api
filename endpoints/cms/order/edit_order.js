@@ -1,4 +1,5 @@
 const Order = require("../../../models/order"),
+  Thread = require("../../../models/thread"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -18,16 +19,19 @@ module.exports = (req, res, next) => {
   let validId = ObjectId.isValid(_id);
 
   const updateOrder = () => {
+    console.log(req.body, validId);
     let query = validId
-      ? { status: 1, _id: ObjectId(_id) }
+      ? { _id: ObjectId(_id) }
       : {
-          order_no: _id,
-          status: 1
+          order_no: _id
         };
     return Order.findOneAndUpdate(query, req.body).catch(err => {
       throw err;
     });
   };
+
+  const closeThread = order =>
+    Thread.updateMany({ order: ObjectId(order) }, { $set: { status: 0 } });
 
   async function main() {
     try {
@@ -46,6 +50,7 @@ module.exports = (req, res, next) => {
         await updateOrder();
         if (req.body.status) {
           const {
+            _id: orderId,
             customer: { messenger_id },
             order_no
           } = order;
@@ -59,10 +64,12 @@ module.exports = (req, res, next) => {
               break;
             }
             case 3: {
+              await closeThread(orderId);
               sendMessage(messenger_id, DELIVERED(order_no));
               break;
             }
             case 4: {
+              await closeThread(orderId);
               sendMessage(messenger_id, REJECTED(order_no));
               break;
             }

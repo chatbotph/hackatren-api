@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const Agent = require("../../../models/agent"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -10,25 +10,25 @@ module.exports = (req, res, next) => {
   const {
     pageSize = 40,
     page = 1,
-    qName = "",
-    qAddress = "",
+    qUsername = "",
+    qEmail = "",
     qContact = "",
     fields = ""
   } = req.query;
 
-  const getCustomers = () => {
+  const getAgents = () => {
     const textQuery = [];
     let query = {
       status: 1
     };
-    if (qName !== "") {
+    if (qUsername !== "") {
       textQuery.push({
-        name: new RegExp(`${qName}`, "i")
+        name: new RegExp(`${qUsername}`, "i")
       });
     }
-    if (qAddress !== "") {
+    if (qEmail !== "") {
       textQuery.push({
-        address: new RegExp(`${qAddress}`, "i")
+        address: new RegExp(`${qEmail}`, "i")
       });
     }
     if (qContact !== "") {
@@ -43,21 +43,15 @@ module.exports = (req, res, next) => {
         status: 1
       };
     }
-
-    return Customer.find(query, fields)
-      .sort({ timestamp: -1 })
-      .skip((Number(page) - 1) * Number(pageSize))
-      .limit(Number(pageSize))
-      .catch(err => {
-        throw err;
-      });
+    return Agent.count(query).catch(err => {
+      throw err;
+    });
   };
 
   async function main() {
     try {
-      const customers = await getCustomers();
-
-      sendData(res, "", customers, 200);
+      const count = await getAgents();
+      sendData(res, "", count, 200);
     } catch (error) {
       console.error(error);
       sendError(res, SERVER_ERROR, SERVER_ERROR_MSG);

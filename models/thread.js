@@ -9,7 +9,7 @@ const mongoose = require("mongoose"),
 
 const thread = new Schema({
   order: refGen("Delivery-Order"),
-  agent: requiredField(OID),
+  // agent: requiredField(OID),
   status: requiredField(NUM, true, 1), //0-archived 1-active,
   last_activity: requiredField(NUM, true, Date.now()),
   timestamp: requiredField(NUM, true, Date.now())

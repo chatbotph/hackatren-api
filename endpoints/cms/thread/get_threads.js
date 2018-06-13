@@ -11,13 +11,22 @@ const Thread = require("../../../models/thread"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
+  let agent = "";
+  const {
+    data: { _id, permission }
+  } = decodeToken(req.headers["authorization-token"]);
+
+  if (permission === "agent") {
+    agent = _id;
+  }
+
   let { fields, populate = "" } = req.query;
 
   const getThreads = () =>
     Thread.find({ status: 1 }, fields)
       .populate({
         path: "order",
-        select: "customer order_no",
+        select: "customer order_no agent",
         populate: { path: "customer", select: "name" }
       })
       .sort({ last_activity: -1 })

@@ -4,6 +4,7 @@ const Order = require("../../../models/order"),
     errMsgs: { SERVER_ERROR_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
+  { decodeToken } = require("../../../utils/security"),
   { populateQuery } = require("../../../utils/op-helpers"),
   {
     Types: { ObjectId }
@@ -11,6 +12,15 @@ const Order = require("../../../models/order"),
   moment = require("moment");
 
 module.exports = (req, res, next) => {
+  let agent = "";
+  const {
+    data: { _id, permission }
+  } = decodeToken(req.headers["authorization-token"]);
+
+  if (permission === "agent") {
+    agent = _id;
+  }
+  console.log("agent", agent);
   const {
     pageSize = 40,
     page = 1,
@@ -34,6 +44,10 @@ module.exports = (req, res, next) => {
 
     if (customer !== "") {
       query.customer = ObjectId(customer);
+    }
+
+    if (agent !== "") {
+      query.agent = ObjectId(agent);
     }
 
     if (start !== "" && end !== "") {
@@ -80,6 +94,7 @@ module.exports = (req, res, next) => {
   async function main() {
     try {
       const orders = await getOrders();
+      console.log("getorders")
       sendData(res, "", orders, 200);
     } catch (error) {
       console.error(error);

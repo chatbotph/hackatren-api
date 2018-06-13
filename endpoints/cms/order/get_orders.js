@@ -15,10 +15,9 @@ module.exports = (req, res, next) => {
     customer = "",
     messenger_id = "",
     populate = "",
-    order_no = ""
+    order_no = "",
+    agent = ""
   } = req.query;
-
-  console.log(req.body);
 
   const getOrders = () => {
     let query = {
@@ -34,6 +33,10 @@ module.exports = (req, res, next) => {
 
     if (order_no !== "") {
       query["order_no"] = order_no;
+    }
+
+    if (agent !== "") {
+      query["agent"] = ObjectId(agent);
     }
 
     return Order.find(query, fields)

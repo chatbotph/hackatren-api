@@ -15,11 +15,12 @@ module.exports = (req, res, next) => {
   const {
     data: { _id }
   } = decodeToken(req.headers["authorization-token"]);
+  const agentId = "5b1de66b9e72ea2c2ca9efb7";
   const { name } = req.body;
 
   const createThread = () => {
     let { thread } = req.body;
-    thread = Object.assign({ agent: ObjectId(_id) }, thread);
+    console.log(thread)
     const newThread = new Thread(thread);
     return newThread.save().catch(err => {
       throw err;
@@ -51,7 +52,7 @@ module.exports = (req, res, next) => {
 
       req.payload = {
         thread,
-        agent: _id
+        agent: agentId
       };
       next();
     } catch (error) {

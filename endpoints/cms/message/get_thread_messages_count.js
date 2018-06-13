@@ -9,11 +9,14 @@ const Message = require("../../../models/message"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { thread = "" } = req.query;
-  let query;
+  const { thread = "", status = "" } = req.query;
+  let query = {};
 
   if (thread !== "") {
-    query = { thread: ObjectId(thread) };
+    query["thread"] = ObjectId(thread);
+  }
+  if (status !== "") {
+    query["status"] = Number(status);
   }
   async function main() {
     try {

@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const Agent = require("../../../models/agent"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -11,24 +11,33 @@ module.exports = (req, res, next) => {
     pageSize = 40,
     page = 1,
     qName = "",
-    qAddress = "",
+    qUsername = "",
+    qEmail = "",
     qContact = "",
     fields = ""
   } = req.query;
 
-  const getCustomers = () => {
+  const getAgents = () => {
     const textQuery = [];
     let query = {
       status: 1
     };
-    if (qName !== "") {
+    if (qUsername !== "") {
       textQuery.push({
-        name: new RegExp(`${qName}`, "i")
+        name: new RegExp(`${qUsername}`, "i")
       });
     }
-    if (qAddress !== "") {
+    if (qName !== "") {
       textQuery.push({
-        address: new RegExp(`${qAddress}`, "i")
+        $or: [
+          { "name.first": new RegExp(`${qName}`, "i") },
+          { "name.last": new RegExp(`${qName}`, "i") }
+        ]
+      });
+    }
+    if (qEmail !== "") {
+      textQuery.push({
+        address: new RegExp(`${qEmail}`, "i")
       });
     }
     if (qContact !== "") {
@@ -43,8 +52,7 @@ module.exports = (req, res, next) => {
         status: 1
       };
     }
-
-    return Customer.find(query, fields)
+    return Agent.find(query, fields)
       .sort({ timestamp: -1 })
       .skip((Number(page) - 1) * Number(pageSize))
       .limit(Number(pageSize))
@@ -55,9 +63,8 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      const customers = await getCustomers();
-
-      sendData(res, "", customers, 200);
+      const agents = await getAgents();
+      sendData(res, "", agents, 200);
     } catch (error) {
       console.error(error);
       sendError(res, SERVER_ERROR, SERVER_ERROR_MSG);

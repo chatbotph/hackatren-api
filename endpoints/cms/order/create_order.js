@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
   // const {
   //   data: { _id: agentId }
   // } = decodeToken(req.headers["authorization-token"]);
-  const agentId = "5af3db1271f54735bccdacbb";
+  const agentId = "5b1de66b9e72ea2c2ca9efb7";
   const { name, messenger_id } = req.body;
 
   const getCustomer = () =>
@@ -29,7 +29,7 @@ module.exports = (req, res, next) => {
       length: 6,
       capitalization: "uppercase"
     });
-    const newOrder = new Order(req.body);
+    const newOrder = new Order(Object.assign({ agent: agentId }, req.body));
     return newOrder.save().catch(err => {
       throw err;
     });
@@ -37,8 +37,7 @@ module.exports = (req, res, next) => {
 
   const createThread = orderId =>
     new Thread({
-      order: orderId,
-      agent: agentId
+      order: orderId
     }).save();
 
   async function main() {

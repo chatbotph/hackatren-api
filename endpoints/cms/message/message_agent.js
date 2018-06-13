@@ -24,7 +24,6 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      console.log("body", req.body);
       let order = await Order.findOne({ order_no });
       if (isNotExists(order)) {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
@@ -37,17 +36,22 @@ module.exports = (req, res, next) => {
           sendError(res, NOT_FOUND, NOT_FOUND_MSG);
         } else {
           const { _id: threadId } = checkThread;
-          const msg = Object.assign({ thread: checkThread._id }, req.body);
+          const msg = Object.assign(
+            { timestamp: Date.now(), thread: checkThread._id },
+            req.body
+          );
           let {
             type,
             message,
             status,
             timestamp,
-            thread
+            thread,
+            _id
           } = await createMessage(msg);
 
           req.payload = {
             message: {
+              _id,
               type,
               message,
               status,
@@ -55,7 +59,7 @@ module.exports = (req, res, next) => {
               thread
             },
             order_no: order.order_no,
-            agent: "5af3db1271f54735bccdacbb"
+            agent: "5b1de66b9e72ea2c2ca9efb7"
           };
           next();
         }

@@ -9,6 +9,7 @@ const mongoose = require("mongoose"),
 
 const order = new Schema({
   customer: refGen("Delivery-Customer"),
+  agent: requiredField(OID),
   items: [{ quantity: requiredField(NUM), item: refGen("Delivery-Item") }],
   total_price: requiredField(STR),
   status: requiredField(NUM, true, 1), //0-archived 1-pending 2-for delivery 3-delivered 4 canceled,

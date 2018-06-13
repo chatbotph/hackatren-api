@@ -4,9 +4,20 @@ const Order = require("../../../models/order"),
     errMsgs: { SERVER_ERROR_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
+  { decodeToken } = require("../../../utils/security"),
+  {
+    Types: { ObjectId }
+  } = require("mongoose"),
   moment = require("moment");
 
 module.exports = (req, res, next) => {
+  let agent = "";
+  const {
+    data: { _id, permission }
+  } = decodeToken(req.headers["authorization-token"]);
+  if (permission === "agent") {
+    agent = _id;
+  }
   const {
     pageSize = 40,
     page = 1,
@@ -14,7 +25,8 @@ module.exports = (req, res, next) => {
     fields = "",
     start = "",
     end = "",
-    populate = ""
+    populate = "",
+    customer = ""
   } = req.query;
 
   const getOrders = () => {
@@ -24,6 +36,14 @@ module.exports = (req, res, next) => {
 
     if (q !== "") {
       query.order_no = new RegExp(`${q}`, "i");
+    }
+
+    if (customer !== "") {
+      query.customer = ObjectId(customer);
+    }
+
+    if (agent !== "") {
+      query.agent = ObjectId(agent);
     }
 
     if (start !== "" && end !== "") {

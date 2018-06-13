@@ -26,7 +26,15 @@ const //mongoDB connect
 dbconn = () => {
   var URI = process.env.MONGODB_URI;
   mongoose.Promise = global.Promise;
-  mongoose.connect(URI, { config: { autoIndex: false } });
+  mongoose.connect(
+    URI,
+    {
+      autoReconnect: true,
+      reconnectTries: Number.MAX_VALUE,
+      reconnectInterval: 1000,
+      config: { autoIndex: false }
+    }
+  );
   mongoose.connection
     .on("error", error => console.log("Error connecting to MongoLab:", error))
     .once("open", () => console.log(`Connected to ${URI}`));

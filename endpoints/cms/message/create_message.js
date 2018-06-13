@@ -13,6 +13,10 @@ const Message = require("../../../models/message"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
+  const {
+    data: { _id, permission }
+  } = decodeToken(req.headers["authorization-token"]);
+
   const createMessage = () => {
     const newMsg = new Message(req.body);
     return newMsg.save().catch(err => {
@@ -22,16 +26,28 @@ module.exports = (req, res, next) => {
 
   async function main() {
     try {
-      console.log("here");
-      let { thread, message } = await createMessage();
+      let {
+        thread,
+        type,
+        message,
+        status,
+        timestamp,
+        _id
+      } = await createMessage();
       const { order } = await Thread.findById(thread).populate({
         path: "order",
-        select: "customer",
+        select: "customer order_no",
         populate: { path: "customer", select: "messenger_id" }
       });
       sendMessage(order.customer.messenger_id, message);
 
-      sendData(res);
+      req.payload = {
+        message: { thread, type, message, status, timestamp, _id },
+        order_no: order.order_no,
+        senderId: permission === "agent" ? _id : `${_id}_ADMIN`
+      };
+
+      next();
     } catch (error) {
       console.error(error);
       sendError(res, SERVER_ERROR, SERVER_ERROR_MSG);
