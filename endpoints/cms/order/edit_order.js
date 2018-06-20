@@ -64,12 +64,12 @@ module.exports = (req, res, next) => {
               break;
             }
             case 3: {
-              await closeThread(orderId);
+              // await closeThread(orderId);
               sendMessage(messenger_id, DELIVERED(order_no));
               break;
             }
             case 4: {
-              await closeThread(orderId);
+              // await closeThread(orderId);
               sendMessage(messenger_id, REJECTED(order_no));
               break;
             }
