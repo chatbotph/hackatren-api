@@ -22,7 +22,7 @@ module.exports = (req, res, next) => {
   }
   console.log("agent", agent);
   const {
-    pageSize = 40,
+    pageSize = 30,
     page = 1,
     q = "",
     fields = "",
@@ -32,6 +32,8 @@ module.exports = (req, res, next) => {
     status = "",
     customer = ""
   } = req.query;
+
+  console.log("query", req.query);
 
   const getOrders = () => {
     let query = {
@@ -94,7 +96,7 @@ module.exports = (req, res, next) => {
   async function main() {
     try {
       const orders = await getOrders();
-      console.log("getorders")
+      console.log("getorders");
       sendData(res, "", orders, 200);
     } catch (error) {
       console.error(error);

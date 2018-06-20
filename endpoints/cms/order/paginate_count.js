@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
     agent = _id;
   }
   const {
-    pageSize = 40,
+    pageSize = 30,
     page = 1,
     q = "",
     fields = "",
