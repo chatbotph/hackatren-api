@@ -17,10 +17,10 @@ module.exports = (req, res, next) => {
     let query = order_no
       ? {
           order_no,
-          $and: [{ status: { $gte: 1 } }, { status: { $lt: 4 } }]
+          $and: [{ status: { $gte: 1 } }, { status: { $lt: 5 } }]
         }
       : {
-          $and: [{ status: { $gte: 1 } }, { status: { $lt: 4 } }],
+          $and: [{ status: { $gte: 1 } }, { status: { $lt: 5 } }],
           _id
         };
 
