@@ -4,8 +4,15 @@ const { Messenger } = require("fbmessenger");
 
 /**END */
 
-module.exports.sendMessage = (id, text) => {
+module.exports.sendMessage = (id, text, client) => {
   // var messenger = new fb(process.env.FB_ACCESS_TOKEN);
+  const token;
+  if(client ==="jollibee"){
+    token = process.env.JOLLIBEE_PAGE_TOKEN
+  } else{
+    token = process.env.BONCHON_PAGE_TOKEN
+  }
+  console.log(id);
   const messenger = new Messenger({
     pageAccessToken: process.env.FB_ACCESS_TOKEN
   });

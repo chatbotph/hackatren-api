@@ -46,7 +46,7 @@ module.exports = (req, res, next) => {
         populate: { path: "customer agent", select: "messenger_id" }
       });
 
-      sendMessage(order.customer.messenger_id, message);
+      sendMessage(order.customer.messenger_id, message, client);
 
       const { agent } = await Order.findById(order._id, "agent");
       console.log("order agent", agent);
