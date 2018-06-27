@@ -11,9 +11,13 @@ const OrderSchema = require("../../../models/order"),
   randomstring = require("randomstring");
 
 module.exports = (req, res, next) => {
-  const agentId = "5b32ebf8fe648029249a9adc";
   const { name, messenger_id } = req.body;
   const { client } = req.query;
+
+  const agentId =
+    client === "jolibeee"
+      ? "5b32ebf8fe648029249a9adc"
+      : "5b32f57d0ec26f3050c3889d";
 
   const Order = OrderSchema(client);
   const Customer = CustomerSchema(client);

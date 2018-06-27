@@ -63,7 +63,7 @@ module.exports = (req, res, next) => {
               thread
             },
             order_no: order.order_no,
-            agent: agentId
+            agent: order.agent
           };
           req.org = client;
           next();
