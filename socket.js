@@ -30,10 +30,11 @@ module.exports = api => {
 
   const emitNewOrder = (req, res, next) => {
     const { order, agent, thread } = req.payload;
+    const org = req.org;
     const getAdminSockets = Object.keys(USER_SOCKETS).filter(
-      socket => socket.indexOf("_ADMIN") > -1
+      socket => socket.indexOf(`_ADMIN_${org}`) > -1
     );
-    const userSocket = USER_SOCKETS[agent];
+    const userSocket = USER_SOCKETS[`${agent}_${org}`];
     if (userSocket) {
       console.log(agent);
       userSocket.emit(ORDER, { order, thread });
@@ -49,10 +50,11 @@ module.exports = api => {
 
   const emitThread = (req, res, next) => {
     const { thread, agent } = req.payload;
+    const org = req.org;
     const getAdminSockets = Object.keys(USER_SOCKETS).filter(
-      socket => socket.indexOf("_ADMIN") > -1
+      socket => socket.indexOf(`_ADMIN_${org}`) > -1
     );
-    const userSocket = USER_SOCKETS[agent];
+    const userSocket = USER_SOCKETS[`${agent}_${org}`];
     if (userSocket) {
       userSocket.emit(THREAD, { thread });
     }
@@ -65,10 +67,11 @@ module.exports = api => {
 
   const emitMessage = (req, res, next) => {
     const { message, agent, order_no } = req.payload;
+    const org = req.org;
     const getAdminSockets = Object.keys(USER_SOCKETS).filter(
-      socket => socket.indexOf("_ADMIN") > -1
+      socket => socket.indexOf(`_ADMIN_${org}`) > -1
     );
-    const userSocket = USER_SOCKETS[agent];
+    const userSocket = USER_SOCKETS[`${agent}_${org}`];
     if (userSocket) {
       userSocket.emit(MESSAGE, { message, order_no });
     }
@@ -83,16 +86,17 @@ module.exports = api => {
     //IF AGENT SEND TO ADMIN
     //IF ADMIN SENT TO AGENT
     let sockets;
-    const { message, order_no } = req.payload;
+    const { message, order_no, agent } = req.payload;
+    const org = req.org;
     if (message.type === 0) {
       //send to admin
       sockets = Object.keys(USER_SOCKETS).filter(
-        socket => socket.indexOf("_ADMIN") > -1
+        socket => socket.indexOf(`_ADMIN_${org}`) > -1
       );
     } else {
       //send to agent
       sockets = Object.keys(USER_SOCKETS).filter(
-        socket => socket.indexOf("_ADMIN") < 0
+        socket => socket.indexOf(`${agent}_${org}`) < 0
       );
     }
     sockets.forEach(socket => {
@@ -101,19 +105,6 @@ module.exports = api => {
     });
     return sendData(res);
   };
-
-  // const emitMessage = (req, res, next) => {
-  //   const tickets = req.tickets;
-  //   if (tickets.length > 0) {
-  //     tickets.forEach(ticket => {
-  //       const userSocket = USER_SOCKETS[ticket.agent._id];
-  //       if (userSocket) {
-  //         userSocket.emit(AGENT_QUEUE, ticket);
-  //       }
-  //     });
-  //     res.send(201);
-  //   }
-  // };
 
   return {
     emitThread,

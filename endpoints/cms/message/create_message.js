@@ -1,5 +1,6 @@
 const MessageSchema = require("../../../models/message"),
   ThreadSchema = require("../../../models/thread"),
+  OrderSchema = require("../../../models/order"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -20,6 +21,7 @@ module.exports = (req, res, next) => {
   const { client } = req.query;
   const Message = MessageSchema(client);
   const Thread = ThreadSchema(client);
+  const Order = OrderSchema(client);
 
   const createMessage = () => {
     const newMsg = new Message(req.body);
@@ -40,17 +42,21 @@ module.exports = (req, res, next) => {
       } = await createMessage();
       const { order } = await Thread.findById(thread).populate({
         path: "order",
-        select: "customer order_no",
-        populate: { path: "customer", select: "messenger_id" }
+        select: "customer",
+        populate: { path: "customer agent", select: "messenger_id" }
       });
+
       sendMessage(order.customer.messenger_id, message);
+
+      const { agent } = await Order.findById(order._id, "agent");
+      console.log("order agent", agent);
 
       req.payload = {
         message: { thread, type, message, status, timestamp, _id },
         order_no: order.order_no,
-        senderId: permission === "agent" ? _id : `${_id}_ADMIN`
+        agent: agent._id
       };
-
+      req.org = client;
       next();
     } catch (error) {
       console.error(error);

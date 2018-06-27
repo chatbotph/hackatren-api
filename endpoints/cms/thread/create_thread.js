@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
   const {
     data: { _id }
   } = decodeToken(req.headers["authorization-token"]);
-  const agentId = "5b1de66b9e72ea2c2ca9efb7";
+  const agentId = "5b32ebf8fe648029249a9adc";
   const { name } = req.body;
   const { client } = req.query;
 
@@ -58,6 +58,7 @@ module.exports = (req, res, next) => {
         thread,
         agent: agentId
       };
+      req.org = client;
       next();
     } catch (error) {
       console.error(error);

@@ -14,7 +14,7 @@ const MessageSchema = require("../../../models/message"),
 
 module.exports = (req, res, next) => {
   const { order_no, client } = req.query;
-
+  const agentId = "5b32ebf8fe648029249a9adc";
   const Message = MessageSchema(client);
   const Thread = ThreadSchema(client);
   const Order = OrderSchema(client);
@@ -63,8 +63,9 @@ module.exports = (req, res, next) => {
               thread
             },
             order_no: order.order_no,
-            agent: "5b1de66b9e72ea2c2ca9efb7"
+            agent: agentId
           };
+          req.org = client;
           next();
         }
       }

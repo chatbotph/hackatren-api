@@ -11,7 +11,7 @@ const OrderSchema = require("../../../models/order"),
   randomstring = require("randomstring");
 
 module.exports = (req, res, next) => {
-  const agentId = "5b1de66b9e72ea2c2ca9efb7";
+  const agentId = "5b32ebf8fe648029249a9adc";
   const { name, messenger_id } = req.body;
   const { client } = req.query;
 
@@ -63,6 +63,7 @@ module.exports = (req, res, next) => {
           thread,
           order
         };
+        req.org = client;
         next();
       } else {
         sendError(res, NOT_FOUND, NOT_FOUND_MSG);
