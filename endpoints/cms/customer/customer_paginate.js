@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const CustomerSchema = require("../../../models/customer"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -13,8 +13,10 @@ module.exports = (req, res, next) => {
     qName = "",
     qAddress = "",
     qContact = "",
-    fields = ""
+    fields = "",
+    client
   } = req.query;
+  const Customer = CustomerSchema(client);
 
   const getCustomers = () => {
     const textQuery = [];

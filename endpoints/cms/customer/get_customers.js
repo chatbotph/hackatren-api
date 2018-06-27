@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const CustomerSchema = require("../../../models/customer"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -6,7 +6,9 @@ const Customer = require("../../../models/customer"),
   { sendError, sendData } = require("../../../utils/uni-response");
 
 module.exports = (req, res, next) => {
-  const { fields } = req.query;
+  const { fields, client } = req.query;
+  const Customer = CustomerSchema(client);
+
   const getCustomers = () =>
     Customer.find({ status: 1 }, fields)
       .sort({ timestamp: -1 })

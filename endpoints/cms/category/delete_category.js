@@ -1,5 +1,5 @@
-const Category = require("../../../models/category"),
-  Item = require("../../../models/item"),
+const CategorySchema = require("../../../models/category"),
+  ItemSchema = require("../../../models/item"),
   {
     errs: { SERVER_ERROR, NOT_FOUND, CONFILCT_ERROR },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG, CONFLICT_MSG }
@@ -12,6 +12,10 @@ const Category = require("../../../models/category"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+
+  const Category = CategorySchema(client);
+  const Item = ItemSchema(client);
 
   const checkItem = () =>
     Item.findOne({ categories: { $elemMatch: { $eq: ObjectId(_id) } } }).catch(

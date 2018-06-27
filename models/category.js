@@ -3,12 +3,19 @@ const mongoose = require("mongoose"),
   {
     requiredField,
     fieldTypes: { STR, NUM }
-  } = require("../utils/database");
+  } = require("../utils/database"),
+  { DELIVERY_CATEGORY } = require("../global");
 
-const category = new Schema({
-  name: requiredField(STR),
-  status: requiredField(NUM, true, 1), //0-archived 1-active,
-  timestamp: requiredField(NUM, true, Date.now())
-});
-
-module.exports = mongoose.model("Delivery-Category", category);
+module.exports = prefix => {
+  const modelName = `${prefix}-${DELIVERY_CATEGORY}`;
+  const model = mongoose.connection.models[modelName];
+  if (model) {
+    return model;
+  }
+  const category = new Schema({
+    name: requiredField(STR),
+    status: requiredField(NUM, true, 1), //0-archived 1-active,
+    timestamp: requiredField(NUM, true, Date.now())
+  });
+  return mongoose.model(modelName, category);
+};

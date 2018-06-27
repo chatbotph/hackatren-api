@@ -1,4 +1,4 @@
-const Category = require("../../../models/category"),
+const CategorySchema = require("../../../models/category"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -11,7 +11,8 @@ const Category = require("../../../models/category"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { fields } = req.query;
+  const { fields, client } = req.query;
+  const Category = CategorySchema(client);
 
   const getCategory = () =>
     Category.findOne({ _id: ObjectId(_id), status: 1 }, fields).catch(err => {

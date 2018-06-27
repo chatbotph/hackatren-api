@@ -1,4 +1,4 @@
-const Message = require("../../../models/message"),
+const MessageSchema = require("../../../models/message"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -9,7 +9,8 @@ const Message = require("../../../models/message"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { thread = "", status = "" } = req.query;
+  const { thread = "", status = "", client } = req.query;
+  const Message = MessageSchema(client);
   let query = {};
 
   if (thread !== "") {

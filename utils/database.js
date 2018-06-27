@@ -23,7 +23,7 @@ const requiredField = (type, required = true, defaultVal = undefined) => {
 const refGen = ref => ({ type: OID, ref });
 
 const //mongoDB connect
-dbconn = () => {
+dbconn = (cb = () => {}) => {
   var URI = process.env.MONGODB_URI;
   mongoose.Promise = global.Promise;
   mongoose.connect(
@@ -37,7 +37,10 @@ dbconn = () => {
   );
   mongoose.connection
     .on("error", error => console.log("Error connecting to MongoLab:", error))
-    .once("open", () => console.log(`Connected to ${URI}`));
+    .once("open", () => {
+      cb();
+      console.log(`Connected to ${URI}, READY TO CREATE MODELS`);
+    });
 };
 
 module.exports = {

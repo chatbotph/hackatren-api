@@ -1,4 +1,4 @@
-const Message = require("../../../models/message"),
+const MessageSchema = require("../../../models/message"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -11,8 +11,9 @@ const Message = require("../../../models/message"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+  const Message = MessageSchema(client);
 
-  console.log(req.body);
   const updateItem = () =>
     Message.update({ _id: ObjectId(_id) }, { $set: req.body }).catch(err => {
       throw err;

@@ -1,4 +1,4 @@
-const Item = require("../../../models/item"),
+const ItemSchema = require("../../../models/item"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -8,6 +8,8 @@ const Item = require("../../../models/item"),
 
 module.exports = (req, res, next) => {
   const { name } = req.body;
+  const { client } = req.query;
+  const Item = ItemSchema(client);
 
   const checkExisting = () =>
     Item.findOne({ name, status: 1 }).catch(err => {

@@ -1,6 +1,6 @@
-const Order = require("../../../models/order"),
-  Customer = require("../../../models/customer"),
-  Thread = require("../../../models/thread"),
+const OrderSchema = require("../../../models/order"),
+  CustomerSchema = require("../../../models/customer"),
+  ThreadSchema = require("../../../models/thread"),
   {
     errs: { NOT_FOUND, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -11,11 +11,13 @@ const Order = require("../../../models/order"),
   randomstring = require("randomstring");
 
 module.exports = (req, res, next) => {
-  // const {
-  //   data: { _id: agentId }
-  // } = decodeToken(req.headers["authorization-token"]);
   const agentId = "5b1de66b9e72ea2c2ca9efb7";
   const { name, messenger_id } = req.body;
+  const { client } = req.query;
+
+  const Order = OrderSchema(client);
+  const Customer = CustomerSchema(client);
+  const Thread = ThreadSchema(client);
 
   const getCustomer = () =>
     Customer.findOne({ messenger_id, status: 1 }).catch(err => {

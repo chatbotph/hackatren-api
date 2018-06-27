@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const CustomerSchema = require("../../../models/customer"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -8,6 +8,8 @@ const Customer = require("../../../models/customer"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+  const Customer = CustomerSchema(client);
 
   const updateCustomerById = () =>
     Customer.findByIdAndUpdate(_id, req.body).catch(err => {

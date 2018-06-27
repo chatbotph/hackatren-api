@@ -1,4 +1,4 @@
-const Category = require("../../../models/category"),
+const CategorySchema = require("../../../models/category"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -8,6 +8,8 @@ const Category = require("../../../models/category"),
 
 module.exports = (req, res, next) => {
   const { name } = req.body;
+  const { client } = req.query;
+  const Category = CategorySchema(client);
 
   const checkExisting = () =>
     Category.findOne({ name, status: 1 }).catch(err => {

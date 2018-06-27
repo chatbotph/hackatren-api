@@ -1,13 +1,13 @@
-const Category = require("../../../models/category"),
+const CategorySchema = require("../../../models/category"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response");
- 
 
 module.exports = (req, res, next) => {
-  const { fields } = req.query;
+  const { fields,client } = req.query;
+  const Category = CategorySchema(client);
   const getCategories = () =>
     Category.find({ status: 1 }, fields).catch(err => {
       throw err;

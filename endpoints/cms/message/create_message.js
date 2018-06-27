@@ -1,5 +1,5 @@
-const Message = require("../../../models/message"),
-  Thread = require("../../../models/thread"),
+const MessageSchema = require("../../../models/message"),
+  ThreadSchema = require("../../../models/thread"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -16,6 +16,10 @@ module.exports = (req, res, next) => {
   const {
     data: { _id, permission }
   } = decodeToken(req.headers["authorization-token"]);
+
+  const { client } = req.query;
+  const Message = MessageSchema(client);
+  const Thread = ThreadSchema(client);
 
   const createMessage = () => {
     const newMsg = new Message(req.body);

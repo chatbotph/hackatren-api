@@ -1,4 +1,4 @@
-const Item = require("../../../models/item"),
+const ItemSchema = require("../../../models/item"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -10,7 +10,8 @@ const Item = require("../../../models/item"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { fields, category = "", populate = "" } = req.query;
+  const { fields, category = "", populate = "", client } = req.query;
+  const Item = ItemSchema(client);
 
   const getItems = () => {
     let query = {

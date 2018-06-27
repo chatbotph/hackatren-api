@@ -1,4 +1,4 @@
-const Order = require("../../../models/order"),
+const OrderSchema = require("../../../models/order"),
   {
     errs: { SERVER_ERROR, NOT_FOUND, CONFILCT_ERROR },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG, CONFLICT_MSG }
@@ -11,6 +11,9 @@ const Order = require("../../../models/order"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+
+  const Order = OrderSchema(client);
 
   const removeOrder = () =>
     Order.findByIdAndRemove(_id, (err, order) => {

@@ -1,5 +1,5 @@
-const Thread = require("../../../models/thread"),
-  Message = require("../../../models/message"),
+const ThreadSchema = require("../../../models/thread"),
+  MessageSchema = require("../../../models/message"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -17,10 +17,14 @@ module.exports = (req, res, next) => {
   } = decodeToken(req.headers["authorization-token"]);
   const agentId = "5b1de66b9e72ea2c2ca9efb7";
   const { name } = req.body;
+  const { client } = req.query;
+
+  const Thread = ThreadSchema(client);
+  const Message = MessageSchema(client);
 
   const createThread = () => {
     let { thread } = req.body;
-    console.log(thread)
+    console.log(thread);
     const newThread = new Thread(thread);
     return newThread.save().catch(err => {
       throw err;

@@ -1,4 +1,4 @@
-const Thread = require("../../../models/thread"),
+const ThreadSchema = require("../../../models/thread"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -15,6 +15,9 @@ module.exports = (req, res, next) => {
   const {
     data: { _id, permission }
   } = decodeToken(req.headers["authorization-token"]);
+  const { client } = req.query;
+
+  const Thread = ThreadSchema(client);
 
   if (permission === "agent") {
     agent = _id;

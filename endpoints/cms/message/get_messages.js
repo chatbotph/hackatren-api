@@ -1,4 +1,4 @@
-const Message = require("../../../models/message"),
+const MessageSchema = require("../../../models/message"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -16,8 +16,11 @@ module.exports = (req, res, next) => {
     fields = "",
     paginate = "",
     page = 1,
-    pageSize = 10
+    pageSize = 10,
+    client
   } = req.query;
+
+  const Message = MessageSchema(client);
 
   let query;
 

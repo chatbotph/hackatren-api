@@ -1,6 +1,6 @@
-const Message = require("../../../models/message"),
-  Thread = require("../../../models/thread"),
-  Order = require("../../../models/order"),
+const MessageSchema = require("../../../models/message"),
+  ThreadSchema = require("../../../models/thread"),
+  OrderSchema = require("../../../models/order"),
   {
     errs: { NOT_FOUND, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -13,7 +13,11 @@ const Message = require("../../../models/message"),
   } = require("mongoose");
 
 module.exports = (req, res, next) => {
-  const { order_no } = req.query;
+  const { order_no, client } = req.query;
+
+  const Message = MessageSchema(client);
+  const Thread = ThreadSchema(client);
+  const Order = OrderSchema(client);
 
   const createMessage = message => {
     const newMsg = new Message(message);

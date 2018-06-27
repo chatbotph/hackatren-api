@@ -1,4 +1,4 @@
-const Thread = require("../../../models/thread"),
+const ThreadSchema = require("../../../models/thread"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -8,6 +8,9 @@ const Thread = require("../../../models/thread"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+
+  const Thread = ThreadSchema(client);
 
   const updateThread = () =>
     Thread.findByIdAndUpdate(_id, req.body).catch(err => {

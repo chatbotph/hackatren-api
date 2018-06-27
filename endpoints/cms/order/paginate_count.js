@@ -1,4 +1,4 @@
-const Order = require("../../../models/order"),
+const OrderSchema = require("../../../models/order"),
   {
     errs: { SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG }
@@ -26,8 +26,12 @@ module.exports = (req, res, next) => {
     start = "",
     end = "",
     populate = "",
-    customer = ""
+    customer = "",
+    client
   } = req.query;
+  console.log(client);
+
+  const Order = OrderSchema(client);
 
   const getOrders = () => {
     let query = {

@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const CustomerSchema = require("../../../models/customer"),
   {
     errs: { CONFILCT_ERROR, SERVER_ERROR },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
@@ -8,6 +8,8 @@ const Customer = require("../../../models/customer"),
 
 module.exports = (req, res, next) => {
   const { name, messenger_id } = req.body;
+  const { client } = req.query;
+  const Customer = CustomerSchema(client);
 
   const checkExisting = () =>
     Customer.findOne({ messenger_id, status: 1 }).catch(err => {

@@ -1,9 +1,8 @@
 require("dotenv").config();
 const restify = require("restify"),
   errors = require("restify-errors"),
-  { dbconn } = require("./utils/database");
-
-dbconn();
+  { dbconn } = require("./utils/database"),
+  Constants = require("./global");
 
 //create server
 var api = restify.createServer();
@@ -41,16 +40,23 @@ function unknownMethodHandler(req, res) {
 
 api.on("MethodNotAllowed", unknownMethodHandler);
 
-var port = process.env.PORT || 5000;
-api.listen(port, function() {
-  console.log("Server started @ " + port);
+dbconn(() => {
+  const models = require("./models/schemas");
+  const { CLIENTS } = Constants;
+  //SETUP MODELS
+  CLIENTS.forEach(client => models.forEach(model => model(client)));
+
+  var port = process.env.PORT || 5000;
+  api.listen(port, function() {
+    console.log("Server started @ " + port);
+  });
+
+  module.exports.api = api;
+
+  //Root route
+  api.get("/", function(req, res) {
+    res.send(200, { msg: "DELIVERY BOT API" });
+  });
+
+  require("./endpoints/cms");
 });
-
-module.exports.api = api;
-
-//Root route
-api.get("/", function(req, res) {
-  res.send(200, { msg: "DELIVERY BOT API" });
-});
-
-require("./endpoints/cms");

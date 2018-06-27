@@ -1,4 +1,4 @@
-const Item = require("../../../models/item"),
+const ItemSchema = require("../../../models/item"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -8,6 +8,8 @@ const Item = require("../../../models/item"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+  const Item = ItemSchema(client);
 
   const updateItem = () =>
     Item.findByIdAndUpdate(_id, req.body).catch(err => {

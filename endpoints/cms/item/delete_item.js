@@ -1,5 +1,5 @@
-const Order = require("../../../models/order"),
-  Item = require("../../../models/item"),
+const OrderSchema = require("../../../models/order"),
+  ItemSchema = require("../../../models/item"),
   {
     errs: { SERVER_ERROR, NOT_FOUND, CONFILCT_ERROR },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG, CONFLICT_MSG }
@@ -12,6 +12,9 @@ const Order = require("../../../models/order"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+  const Item = ItemSchema(client);
+  const Order = OrderSchema(client);
 
   const checkOrders = () =>
     Order.findOne({ items: { $elemMatch: { $eq: ObjectId(_id) } } }).catch(
@@ -36,11 +39,7 @@ module.exports = (req, res, next) => {
           await removeItem();
           sendData(res, "Item deleted");
         } else {
-          sendError(
-            res,
-            CONFILCT_ERROR,
-            "Some entities depends on this item, thus you cannot delete it"
-          );
+          sendError(res, CONFILCT_ERROR, "You cannot delete this item");
         }
       }
     } catch (error) {

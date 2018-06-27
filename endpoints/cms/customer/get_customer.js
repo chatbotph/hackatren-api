@@ -1,4 +1,4 @@
-const Customer = require("../../../models/customer"),
+const CustomerSchema = require("../../../models/customer"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -11,7 +11,8 @@ const Customer = require("../../../models/customer"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { fields } = req.query;
+  const { fields, client } = req.query;
+  const Customer = CustomerSchema(client);
 
   const getCustomerByMessengerId = () => {
     return Customer.findOne(

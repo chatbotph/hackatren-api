@@ -1,4 +1,4 @@
-const Item = require("../../../models/item"),
+const ItemSchema = require("../../../models/item"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -11,7 +11,8 @@ const Item = require("../../../models/item"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
-  const { fields, populate = "" } = req.query;
+  const { fields, populate = "", client } = req.query;
+  const Item = ItemSchema(client);
 
   const getItem = () =>
     Item.findOne({ _id: ObjectId(_id), status: 1 }, fields)

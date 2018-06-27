@@ -4,16 +4,25 @@ const mongoose = require("mongoose"),
     requiredField,
     refGen,
     fieldTypes: { STR, NUM }
-  } = require("../utils/database");
+  } = require("../utils/database"),
+  { DELIVERY_ITEM, DELIVERY_CATEGORY } = require("../global");
 
-const item = new Schema({
-  name: requiredField(STR),
-  description: requiredField(STR),
-  price: requiredField(STR),
-  image: requiredField(STR),
-  status: requiredField(NUM, true, 1), //0-archived 1-active,
-  categories: [refGen("Delivery-Category")],
-  timestamp: requiredField(NUM, true, Date.now())
-});
+module.exports = prefix => {
+  const modelName = `${prefix}-${DELIVERY_ITEM}`;
+  const model = mongoose.connection.models[modelName];
+  if (model) {
+    return model;
+  }
 
-module.exports = mongoose.model("Delivery-Item", item);
+  const item = new Schema({
+    name: requiredField(STR),
+    description: requiredField(STR),
+    price: requiredField(STR),
+    image: requiredField(STR),
+    status: requiredField(NUM, true, 1), //0-archived 1-active,
+    categories: [refGen(`${prefix}-${DELIVERY_CATEGORY}`)],
+    timestamp: requiredField(NUM, true, Date.now())
+  });
+
+  return mongoose.model(modelName, item);
+};

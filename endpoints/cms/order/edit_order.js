@@ -1,5 +1,5 @@
-const Order = require("../../../models/order"),
-  Thread = require("../../../models/thread"),
+const OrderSchema = require("../../../models/order"),
+  ThreadSchema = require("../../../models/thread"),
   {
     errs: { SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, NOT_FOUND_MSG }
@@ -16,6 +16,10 @@ const Order = require("../../../models/order"),
 
 module.exports = (req, res, next) => {
   const { _id } = req.params;
+  const { client } = req.query;
+  const Order = OrderSchema(client);
+  const Thread = ThreadSchema(client);
+
   let validId = ObjectId.isValid(_id);
 
   const updateOrder = () => {
