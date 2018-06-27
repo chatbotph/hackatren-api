@@ -96,7 +96,7 @@ module.exports = api => {
     } else {
       //send to agent
       sockets = Object.keys(USER_SOCKETS).filter(
-        socket => socket.indexOf(`${agent}_${org}`) < 0
+        socket => socket.indexOf(`${agent}_${org}`) > -1
       );
     }
     sockets.forEach(socket => {
