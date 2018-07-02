@@ -2,7 +2,7 @@ const MessageSchema = require("../../../models/message"),
   ThreadSchema = require("../../../models/thread"),
   OrderSchema = require("../../../models/order"),
   {
-    errs: { CONFILCT_ERROR, SERVER_ERROR },
+    errs: { CONFILCT_ERROR, SERVER_ERROR, NOT_FOUND },
     errMsgs: { SERVER_ERROR_MSG, CONFLICT_MSG }
   } = require("../../../utils/errors"),
   { sendError, sendData } = require("../../../utils/uni-response"),
@@ -40,24 +40,33 @@ module.exports = (req, res, next) => {
         timestamp,
         _id
       } = await createMessage();
-      const { order } = await Thread.findById(thread).populate({
+      const checkThread = await Thread.findById(thread).populate({
         path: "order",
         select: "customer",
         populate: { path: "customer agent", select: "messenger_id" }
       });
+      if (checkThread) {
+        const { order } = checkThread;
 
-      sendMessage(order.customer.messenger_id, message, client);
+        sendMessage(order.customer.messenger_id, message, client);
 
-      const { agent } = await Order.findById(order._id, "agent");
-      console.log("order agent", agent);
+        const { agent } = await Order.findById(order._id, "agent");
+        console.log("order agent", agent);
 
-      req.payload = {
-        message: { thread, type, message, status, timestamp, _id },
-        order_no: order.order_no,
-        agent: agent._id
-      };
-      req.org = client;
-      next();
+        req.payload = {
+          message: { thread, type, message, status, timestamp, _id },
+          order_no: order.order_no,
+          agent: agent._id
+        };
+        req.org = client;
+        next();
+      } else {
+        sendError(
+          res,
+          NOT_FOUND,
+          "We cannot find this thread. It has been either deleted or removed from the active threads"
+        );
+      }
     } catch (error) {
       console.error(error);
       sendError(res, SERVER_ERROR, SERVER_ERROR_MSG);
