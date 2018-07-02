@@ -16,17 +16,18 @@ module.exports = (req, res, next) => {
     data: { _id, permission }
   } = decodeToken(req.headers["authorization-token"]);
   const { client } = req.query;
+  let query = { status: 1 };
 
   const Thread = ThreadSchema(client);
 
   if (permission === "agent") {
-    agent = _id;
+    query.agent = ObjectId(_id);
   }
 
   let { fields, populate = "" } = req.query;
 
   const getThreads = () =>
-    Thread.find({ status: 1 }, fields)
+    Thread.find(query, fields)
       .populate({
         path: "order",
         select: "customer order_no agent",
