@@ -6,10 +6,13 @@ const CategorySchema = require("../../../models/category"),
   { sendError, sendData } = require("../../../utils/uni-response");
 
 module.exports = (req, res, next) => {
-  const { fields,client } = req.query;
+
+  const { fields, client } = req.query;
+  
   const Category = CategorySchema(client);
+  
   const getCategories = () =>
-    Category.find({ status: 1 }, fields).catch(err => {
+    Category.find({}, fields).catch(err => {
       throw err;
     });
 

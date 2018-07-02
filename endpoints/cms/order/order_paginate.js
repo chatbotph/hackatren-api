@@ -17,10 +17,6 @@ module.exports = (req, res, next) => {
     data: { _id, permission }
   } = decodeToken(req.headers["authorization-token"]);
 
-  if (permission === "agent") {
-    agent = _id;
-  }
-  console.log("agent", agent);
   const {
     pageSize = 30,
     page = 1,
@@ -31,13 +27,20 @@ module.exports = (req, res, next) => {
     populate = "",
     status = "",
     customer = "",
+    qAgent = "",
     client
   } = req.query;
-  console.log(client);
+
+
+  if (permission === "agent") {
+    agent = _id;
+  }
+
+  if (qAgent !== "") {
+    agent = qAgent;
+  }
 
   const Order = OrderSchema(client);
-
-  console.log("query", req.query);
 
   const getOrders = () => {
     let query = {
