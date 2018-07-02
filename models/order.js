@@ -35,7 +35,7 @@ module.exports = prefix => {
 
   order.post("remove", doc => {
     const { _id } = doc;
-    Thread.findOneAndRemove(
+    Thread.findOne(
       { order: mongoose.Types.ObjectId(_id) },
       (err, thread) => {
         thread.remove();

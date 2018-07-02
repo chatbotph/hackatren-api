@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
   const Order = OrderSchema(client);
 
   const removeOrder = () =>
-    Order.findByIdAndRemove(_id, (err, order) => {
+    Order.findById(_id, (err, order) => {
       order.remove();
     }).catch(err => {
       throw err;

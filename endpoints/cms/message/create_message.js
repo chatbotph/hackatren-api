@@ -64,7 +64,9 @@ module.exports = (req, res, next) => {
         sendError(
           res,
           NOT_FOUND,
-          "We cannot find this thread. It has been either deleted or removed from the active threads"
+          `We cannot find this thread. It has been either deleted or removed from the active threads.
+          Click the close button to close this thread
+          `
         );
       }
     } catch (error) {

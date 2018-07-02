@@ -5,8 +5,8 @@ const mongoose = require("mongoose"),
     refGen,
     fieldTypes: { STR, NUM, OID }
   } = require("../utils/database"),
-  { DELIVERY_ORDER, DELIVERY_THREAD } = require("../global"),
-  Message = require("./message");
+  { DELIVERY_ORDER, DELIVERY_THREAD, DELIVERY_MESSAGE } = require("../global"),
+  MessageSchema = require("./message");
 
 module.exports = prefix => {
   const modelName = `${prefix}-${DELIVERY_THREAD}`;
@@ -16,6 +16,8 @@ module.exports = prefix => {
   }
 
   const orderModel = `${prefix}-${DELIVERY_ORDER}`;
+
+  const Message = MessageSchema(prefix);
 
   const thread = new Schema({
     order: refGen(orderModel),
