@@ -1,8 +1,7 @@
 require("dotenv").config();
 const restify = require("restify"),
   errors = require("restify-errors"),
-  { dbconn } = require("./utils/database"),
-  Constants = require("./global");
+  { dbconn } = require("./utils/database")
 
 //create server
 var api = restify.createServer();
@@ -50,8 +49,9 @@ dbconn(() => {
 
   //Root route
   api.get("/", function(req, res) {
-    res.send(200, { msg: "DELIVERY BOT API" });
+    res.send(200, { msg: "YOU ARE NOW BEING TRACKED BY WERPA RANGERS USING H@CK@TR3N API" });
   });
 
-  require("./endpoints/cms");
+  require("./endpoints/commuters/routes");
+  require("./endpoints/reports/routes");
 });
