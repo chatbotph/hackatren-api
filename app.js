@@ -41,11 +41,6 @@ function unknownMethodHandler(req, res) {
 api.on("MethodNotAllowed", unknownMethodHandler);
 
 dbconn(() => {
-  const models = require("./models/schemas");
-  const { CLIENTS } = Constants;
-  //SETUP MODELS
-  CLIENTS.forEach(client => models.forEach(model => model(client)));
-
   var port = process.env.PORT || 5000;
   api.listen(port, function() {
     console.log("Server started @ " + port);

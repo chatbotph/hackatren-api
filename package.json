@@ -16,8 +16,6 @@
     "axios": "^0.18.0",
     "bcrypt": "^2.0.1",
     "dotenv": "^5.0.1",
-    "fb-messenger": "^1.2.0",
-    "fbmessenger": "^5.0.1",
     "jsonwebtoken": "^8.2.1",
     "mongoose": "^5.0.17",
     "randomstring": "^1.1.5",
